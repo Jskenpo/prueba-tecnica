@@ -1,0 +1,20 @@
+services:
+  db-init:
+    build: .
+    volumes:
+      - ./polizas_full.csv.zip:/input/polizas_full.csv.zip:ro
+      - ./data:/data
+
+  api:
+    build: .
+    command: ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000"]
+    depends_on:
+      db-init:
+        condition: service_completed_successfully
+    environment:
+      DATABASE_PATH: /data/comercio_exterior.db
+      JWT_SECRET_KEY: ${JWT_SECRET_KEY:?Set JWT_SECRET_KEY in .env}
+    volumes:
+      - ./data:/data
+    ports:
+      - "8000:8000"
