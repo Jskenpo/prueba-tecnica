@@ -5,7 +5,7 @@ from fastapi.middleware.cors import CORSMiddleware
 
 from app.repositories.auth_repository import init_users_table
 from app.repositories.polizas_repository import ensure_lookup_indexes
-from app.routes import auth_router, dimension_router, polizas_router
+from app.routes import auth_router, dashboard_router, dimension_router, polizas_router
 
 
 @asynccontextmanager
@@ -31,6 +31,7 @@ app.add_middleware(
 app.include_router(auth_router, prefix="/auth", tags=["auth"])
 app.include_router(dimension_router, prefix="/dimensions", tags=["dimensions"])
 app.include_router(polizas_router, prefix="/polizas", tags=["polizas"])
+app.include_router(dashboard_router, prefix="/dashboard", tags=["dashboard"])
 
 
 if __name__ == "__main__":

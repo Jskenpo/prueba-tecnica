@@ -1,6 +1,7 @@
 from datetime import date
 import sqlite3
 
+from app.services.dashboard_service import invalidate_totals_cache
 from app.repositories.polizas_repository import (
     create_poliza as insert_poliza,
     get_poliza,
@@ -34,6 +35,7 @@ def create_poliza(data: dict):
         if exc.sqlite_errorname == "SQLITE_CONSTRAINT_FOREIGNKEY":
             raise InvalidDimensionReference from exc
         raise
+    invalidate_totals_cache()
     return {"id": poliza_id, "correlativo": data["correlativo"],
             "items_created": len(data["items"])}
 

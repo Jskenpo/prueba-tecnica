@@ -29,3 +29,7 @@ Las rutas `GET /dimensions/paises`, `GET /dimensions/aduanas` y `GET /dimensions
 - `GET /polizas`: requiere Bearer y devuelve `items`, `total`, `page`, `page_size`. Admite `page`, `page_size` (máximo 100), `correlativo`, `fecha_desde`, `fecha_hasta` (formato `YYYY-MM-DD`), `aduana_id` y `tipo_regimen_id`. Ordena por `id` descendente.
 - `GET /polizas/{id}`: devuelve la póliza y sus ítems paginados. Admite `page`, `page_size` (máximo 100), `pais_id` y `sac_id` para filtrar ítems. `items_total` cuenta los ítems que coinciden con los filtros.
 - `POST /polizas`: requiere Bearer y recibe una póliza con `correlativo`, `fecha_declaracion`, `tipo_cambio_dolar`, `aduana_id`, `tipo_regimen_id` y al menos un elemento en `items`. Cada ítem requiere `sac_id`, `pais_id` y `tipo_unidad_medida_id`; los valores numéricos del ítem son opcionales. Devuelve `201` con `id`, `correlativo`, `items_created` y el header `Location`. Cabecera e ítems se guardan en una sola transacción.
+
+## Dashboard
+
+- `GET /dashboard/kpis/totals`: requiere Bearer y devuelve el conteo de pólizas e ítems, la suma de `valor_cif_uds` y la suma de `valor_dai`. Las sumas se redondean a dos decimales. El resultado se guarda en caché hasta 60 segundos y se invalida después de crear una póliza.
