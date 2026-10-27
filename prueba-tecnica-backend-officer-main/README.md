@@ -34,3 +34,4 @@ Las rutas `GET /dimensions/paises`, `GET /dimensions/aduanas` y `GET /dimensions
 
 - `GET /dashboard/kpis/totals`: requiere Bearer y devuelve el conteo de pólizas e ítems, la suma de `valor_cif_uds` y la suma de `valor_dai`. Las sumas se redondean a dos decimales. El resultado se guarda en caché hasta 60 segundos y se invalida después de crear una póliza.
 - `GET /dashboard/kpis/top-5`: requiere Bearer y devuelve `paises` y `productos_sac`, cada uno con los cinco mayores totales de `valor_cif_uds`. El resultado se guarda en caché hasta 60 segundos y se invalida después de crear una póliza.
+- `GET /dashboard/kpis/valor-por-mes?year=2025`: requiere Bearer y devuelve los doce meses del año con la suma de `valor_cif_uds` según `fecha_declaracion`; los meses sin datos devuelven cero. Usa caché de hasta 60 segundos, invalidada al crear una póliza.

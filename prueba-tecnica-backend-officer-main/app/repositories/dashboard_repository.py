@@ -49,3 +49,19 @@ def fetch_top_5():
         "paises": [dict(row) for row in countries],
         "productos_sac": [dict(row) for row in products],
     }
+
+
+def fetch_valor_por_mes(year: int):
+    start = f"{year:04d}-01-01"
+    end = f"{year + 1:04d}-01-01"
+    with get_connection() as connection:
+        rows = connection.execute("""
+            SELECT CAST(strftime('%m', p.fecha_declaracion) AS INTEGER) AS mes,
+                   ROUND(COALESCE(SUM(i.valor_cif_uds), 0), 2) AS valor_cif_total_usd
+            FROM polizas AS p
+            JOIN poliza_items AS i ON i.poliza_id = p.id
+            WHERE p.fecha_declaracion >= ? AND p.fecha_declaracion < ?
+            GROUP BY mes
+            ORDER BY mes
+        """, (start, end)).fetchall()
+    return {row["mes"]: row["valor_cif_total_usd"] for row in rows}

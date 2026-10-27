@@ -24,3 +24,13 @@ class TopSac(BaseModel):
 class DashboardTop5(BaseModel):
     paises: list[TopCountry]
     productos_sac: list[TopSac]
+
+
+class MonthValue(BaseModel):
+    mes: int
+    valor_cif_total_usd: float
+
+
+class DashboardMonthly(BaseModel):
+    year: int
+    meses: list[MonthValue]
