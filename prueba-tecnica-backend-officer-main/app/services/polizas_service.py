@@ -1,7 +1,7 @@
 from datetime import date
 import sqlite3
 
-from app.services.dashboard_service import invalidate_totals_cache
+from app.services.dashboard_service import invalidate_top_5_cache, invalidate_totals_cache
 from app.repositories.polizas_repository import (
     create_poliza as insert_poliza,
     get_poliza,
@@ -36,6 +36,7 @@ def create_poliza(data: dict):
             raise InvalidDimensionReference from exc
         raise
     invalidate_totals_cache()
+    invalidate_top_5_cache()
     return {"id": poliza_id, "correlativo": data["correlativo"],
             "items_created": len(data["items"])}
 
