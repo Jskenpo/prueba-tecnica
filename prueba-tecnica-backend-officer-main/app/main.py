@@ -4,8 +4,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 from app.repositories.auth_repository import init_users_table
-from app.routes.auth_routes import router as auth_router
-from app.routes.dimension_routes import router as dimension_router
+from app.routes import auth_router, dimension_router
 
 
 @asynccontextmanager
