@@ -23,3 +23,8 @@ Crear `.env` con `JWT_SECRET_KEY` aleatorio y ejecutar `docker compose up --buil
 ## Dimensiones
 
 Las rutas `GET /dimensions/paises`, `GET /dimensions/aduanas` y `GET /dimensions/tipos-regimen` requieren el token Bearer. Admiten `page` (desde 1), `page_size` (1 a 100, por defecto 20) y `q` (búsqueda por nombre). Devuelven `items`, `total`, `page` y `page_size`, ordenados por nombre.
+
+## Pólizas (lectura)
+
+- `GET /polizas`: requiere Bearer y devuelve `items`, `total`, `page`, `page_size`. Admite `page`, `page_size` (máximo 100), `correlativo`, `fecha_desde`, `fecha_hasta` (formato `YYYY-MM-DD`), `aduana_id` y `tipo_regimen_id`. Ordena por `id` descendente.
+- `GET /polizas/{id}`: devuelve la póliza y sus ítems paginados. Admite `page`, `page_size` (máximo 100), `pais_id` y `sac_id` para filtrar ítems. `items_total` cuenta los ítems que coinciden con los filtros.
