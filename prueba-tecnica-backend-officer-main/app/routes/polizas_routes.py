@@ -1,17 +1,24 @@
 from datetime import date
 from typing import Annotated
 
-from fastapi import APIRouter, Depends, Path, Query
+from fastapi import APIRouter, Depends, Path, Query, Response, status
 
 from app.controllers.auth_controller import get_current_user
-from app.controllers.polizas_controller import get_poliza, list_polizas
-from app.schemas.poliza_schemas import PolizaDetail, PolizaPage
+from app.controllers.polizas_controller import create_poliza, get_poliza, list_polizas
+from app.schemas.poliza_schemas import PolizaCreate, PolizaCreated, PolizaDetail, PolizaPage
 
 router = APIRouter(dependencies=[Depends(get_current_user)])
 
 Page = Annotated[int, Query(ge=1)]
 PageSize = Annotated[int, Query(ge=1, le=100)]
 PositiveId = Annotated[int, Query(ge=1)]
+
+
+@router.post("", response_model=PolizaCreated, status_code=status.HTTP_201_CREATED)
+def create(payload: PolizaCreate, response: Response):
+    created = create_poliza(payload.model_dump(mode="json"))
+    response.headers["Location"] = f"/polizas/{created['id']}"
+    return created
 
 
 @router.get("", response_model=PolizaPage)

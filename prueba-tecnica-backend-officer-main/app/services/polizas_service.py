@@ -1,6 +1,8 @@
 from datetime import date
+import sqlite3
 
 from app.repositories.polizas_repository import (
+    create_poliza as insert_poliza,
     get_poliza,
     list_poliza_items,
     list_polizas,
@@ -13,6 +15,27 @@ class PolizaNotFound(Exception):
 
 class InvalidDateRange(Exception):
     pass
+
+
+class PolizaAlreadyExists(Exception):
+    pass
+
+
+class InvalidDimensionReference(Exception):
+    pass
+
+
+def create_poliza(data: dict):
+    try:
+        poliza_id = insert_poliza(data)
+    except sqlite3.IntegrityError as exc:
+        if exc.sqlite_errorname == "SQLITE_CONSTRAINT_UNIQUE":
+            raise PolizaAlreadyExists from exc
+        if exc.sqlite_errorname == "SQLITE_CONSTRAINT_FOREIGNKEY":
+            raise InvalidDimensionReference from exc
+        raise
+    return {"id": poliza_id, "correlativo": data["correlativo"],
+            "items_created": len(data["items"])}
 
 
 def get_polizas(

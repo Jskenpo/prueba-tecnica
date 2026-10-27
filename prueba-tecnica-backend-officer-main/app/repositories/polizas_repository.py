@@ -78,3 +78,36 @@ def list_poliza_items(
             (*params, limit, offset),
         ).fetchall()
     return total, [dict(row) for row in rows]
+
+
+def create_poliza(data: dict):
+    """Insert the header and every item in one SQLite transaction."""
+    with get_connection() as connection:
+        cursor = connection.execute(
+            """INSERT INTO polizas
+               (correlativo, fecha_declaracion, tipo_cambio_dolar, aduana_id, tipo_regimen_id)
+               VALUES (?, ?, ?, ?, ?)""",
+            (
+                data["correlativo"], data["fecha_declaracion"],
+                data["tipo_cambio_dolar"], data["aduana_id"],
+                data["tipo_regimen_id"],
+            ),
+        )
+        poliza_id = cursor.lastrowid
+        connection.executemany(
+            """INSERT INTO poliza_items
+               (poliza_id, sac_id, pais_id, tipo_unidad_medida_id,
+                cantidad_fraccion, tasa_dai, valor_dai, valor_cif_uds,
+                tasa_cif_cantidad_fraccion)
+               VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)""",
+            [
+                (
+                    poliza_id, item["sac_id"], item["pais_id"],
+                    item["tipo_unidad_medida_id"], item["cantidad_fraccion"],
+                    item["tasa_dai"], item["valor_dai"], item["valor_cif_uds"],
+                    item["tasa_cif_cantidad_fraccion"],
+                )
+                for item in data["items"]
+            ],
+        )
+    return poliza_id

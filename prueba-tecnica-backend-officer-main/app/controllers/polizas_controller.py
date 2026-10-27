@@ -5,6 +5,15 @@ from fastapi import HTTPException
 from app.services import polizas_service
 
 
+def create_poliza(data: dict):
+    try:
+        return polizas_service.create_poliza(data)
+    except polizas_service.PolizaAlreadyExists as exc:
+        raise HTTPException(status_code=409, detail="Correlativo already exists") from exc
+    except polizas_service.InvalidDimensionReference as exc:
+        raise HTTPException(status_code=422, detail="Invalid dimension reference in poliza or item") from exc
+
+
 def list_polizas(
     *, page: int, page_size: int, correlativo: int | None,
     fecha_desde: date | None, fecha_hasta: date | None,

@@ -1,6 +1,6 @@
 from datetime import date
 
-from pydantic import BaseModel
+from pydantic import BaseModel, Field, FiniteFloat, PositiveInt
 
 
 class Poliza(BaseModel):
@@ -37,3 +37,29 @@ class PolizaDetail(Poliza):
     items_total: int
     page: int
     page_size: int
+
+
+class PolizaItemCreate(BaseModel):
+    sac_id: PositiveInt
+    pais_id: PositiveInt
+    tipo_unidad_medida_id: PositiveInt
+    cantidad_fraccion: FiniteFloat | None = None
+    tasa_dai: FiniteFloat | None = None
+    valor_dai: FiniteFloat | None = None
+    valor_cif_uds: FiniteFloat | None = None
+    tasa_cif_cantidad_fraccion: FiniteFloat | None = None
+
+
+class PolizaCreate(BaseModel):
+    correlativo: PositiveInt
+    fecha_declaracion: date
+    tipo_cambio_dolar: FiniteFloat = Field(gt=0)
+    aduana_id: PositiveInt
+    tipo_regimen_id: PositiveInt
+    items: list[PolizaItemCreate] = Field(min_length=1, max_length=1000)
+
+
+class PolizaCreated(BaseModel):
+    id: int
+    correlativo: int
+    items_created: int
