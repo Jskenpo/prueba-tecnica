@@ -1,6 +1,11 @@
-from fastapi import HTTPException, status
+from typing import Annotated
+
+from fastapi import Depends, HTTPException, status
+from fastapi.security import OAuth2PasswordBearer
 
 from app.services import auth_services
+
+oauth2_scheme = OAuth2PasswordBearer(tokenUrl="auth/login")
 
 
 def register_user(username: str, password: str):
@@ -30,3 +35,7 @@ def user_from_token(token: str):
             detail="Invalid or expired token",
             headers={"WWW-Authenticate": "Bearer"},
         ) from exc
+
+
+def get_current_user(token: Annotated[str, Depends(oauth2_scheme)]):
+    return user_from_token(token)

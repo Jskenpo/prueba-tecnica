@@ -5,6 +5,7 @@ from fastapi.middleware.cors import CORSMiddleware
 
 from app.repositories.auth_repository import init_users_table
 from app.routes.auth_routes import router as auth_router
+from app.routes.dimension_routes import router as dimension_router
 
 
 @asynccontextmanager
@@ -27,6 +28,7 @@ app.add_middleware(
 )
 
 app.include_router(auth_router, prefix="/auth", tags=["auth"])
+app.include_router(dimension_router, prefix="/dimensions", tags=["dimensions"])
 
 
 if __name__ == "__main__":

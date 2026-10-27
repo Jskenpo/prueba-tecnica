@@ -1,17 +1,16 @@
 from typing import Annotated
 
 from fastapi import APIRouter, Depends, Response, status
-from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
+from fastapi.security import OAuth2PasswordRequestForm
 
 from app.controllers.auth_controller import (
+    get_current_user,
     login_user,
     register_user,
-    user_from_token,
 )
 from app.schemas.auth_schema import Registration, Token, User
 
 router = APIRouter()
-oauth2_scheme = OAuth2PasswordBearer(tokenUrl="auth/login")
 
 
 @router.post("/register", response_model=User, status_code=status.HTTP_201_CREATED)
@@ -27,5 +26,5 @@ def login(form: Annotated[OAuth2PasswordRequestForm, Depends()], response: Respo
 
 
 @router.get("/me", response_model=User)
-def me(token: Annotated[str, Depends(oauth2_scheme)]):
-    return user_from_token(token)
+def me(user: Annotated[dict, Depends(get_current_user)]):
+    return user
